@@ -21,6 +21,7 @@ def start_game():
                     selected_option = (selected_option + 1) % len(options)
                 elif event.key == pygame.K_RETURN:  # Enter key
                     if options[selected_option] == 'Play as White':
+
                         start()
                     if options[selected_option] == 'Play as Black':
                         start_2()
