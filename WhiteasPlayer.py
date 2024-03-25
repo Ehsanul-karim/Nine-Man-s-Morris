@@ -16,7 +16,7 @@ white_turn = True
 
 def display_board():
     board_surface = pygame.Surface((WINDOW_WIDTH * 0.8, WINDOW_HEIGHT))
-    board_image = pygame.image.load('E:\\4th year, 1st semester\\Nine-Man-s-Morris\\Images\\Board.png')
+    board_image = pygame.image.load('./Images/Board.png')
     board_image = pygame.transform.scale(board_image, (int(WINDOW_WIDTH * 0.8), WINDOW_HEIGHT))    
     board_surface.blit(board_image, (0, 0))
     window.blit(board_surface, (WINDOW_WIDTH * 0.2, 0))

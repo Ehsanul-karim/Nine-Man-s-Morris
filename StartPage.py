@@ -53,3 +53,4 @@ def start_game():
 
         # Update the display
         pygame.display.update()
+    
