@@ -10,7 +10,7 @@ window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption('Nine Men Morris')
 
 # Load logo
-logo = pygame.image.load('E:\\4th year, 1st semester\\AI lab\\Images\\nineman.png')
+logo = pygame.image.load('./Images/nineman.png')
 pygame.display.set_icon(logo)
 
 # Colors
