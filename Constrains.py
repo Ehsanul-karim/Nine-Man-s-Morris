@@ -16,6 +16,7 @@ pygame.display.set_icon(logo)
 
 # Colors
 WHITE = (255, 255, 255)
+RED = (255, 0, 0)
 BLACK = (0, 0, 0)
 BLUE_TRANSPARENT = (0, 0, 255, 128)
 RECTANGLE_SIZE = 30
@@ -59,6 +60,8 @@ position_24= (595,560)
 
 
 positions = np.array([globals()[f"position_{i}"] for i in range(1, 25)])
+
+
 
 # positions = [position_1,position_2]
 
