@@ -14,12 +14,16 @@ point_black = 0
 black_turn = False
 white_turn = True
 
+
 def display_board():
     board_surface = pygame.Surface((WINDOW_WIDTH * 0.8, WINDOW_HEIGHT))
     board_image = pygame.image.load('./Images/Board.png')
     board_image = pygame.transform.scale(board_image, (int(WINDOW_WIDTH * 0.8), WINDOW_HEIGHT))    
     board_surface.blit(board_image, (0, 0))
+    for pos in positions:
+        pygame.draw.rect(board_surface, BLACK, (pos[0], pos[1], RECTANGLE_SIZE, RECTANGLE_SIZE), 1)
     window.blit(board_surface, (WINDOW_WIDTH * 0.2, 0))
+    return board_surface
 
 def update_left_info():
     global black_turn, white_turn
@@ -36,6 +40,8 @@ def update_left_info():
     else:
         display_text('Black', WINDOW_WIDTH * 0.1, 300, color=BLACK, surface=left_info_surface)   
     window.blit(left_info_surface, (0, 0))
+    return left_info_surface
+
 
 # Main loop
 def start():
@@ -56,8 +62,9 @@ def start():
                         white_turn = True
                            
         # Update the display
-        update_left_info()
-        display_board()
+        left_info_surface = update_left_info()
+        board_surface = display_board()
+        # board_surface = show_push_places(board_surface)
         pygame.display.update()
 
-# start()
+start()
