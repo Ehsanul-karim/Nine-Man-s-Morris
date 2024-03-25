@@ -17,6 +17,8 @@ pygame.display.set_icon(logo)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 BLUE_TRANSPARENT = (0, 0, 255, 128)
+
+left_info_color = (200, 200, 200)
 # Font
 font = pygame.font.Font(None, 36)
 

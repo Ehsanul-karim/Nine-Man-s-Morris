@@ -3,7 +3,7 @@ from Constrains import *
 
 # Define positions and dimensions for left side info
 left_info_rect = pygame.Rect(0, 0, WINDOW_WIDTH * 0.2, WINDOW_HEIGHT)
-left_info_color = (200, 200, 200)
+
 
 # Define initial player information
 white_count = 9
@@ -11,38 +11,53 @@ black_count = 9
 point_white = 0
 point_black = 0
 
+black_turn = False
+white_turn = True
+
+def display_board():
+    board_surface = pygame.Surface((WINDOW_WIDTH * 0.8, WINDOW_HEIGHT))
+    board_image = pygame.image.load('E:\\4th year, 1st semester\\Nine-Man-s-Morris\\Images\\Board.png')
+    board_image = pygame.transform.scale(board_image, (int(WINDOW_WIDTH * 0.8), WINDOW_HEIGHT))    
+    board_surface.blit(board_image, (0, 0))
+    window.blit(board_surface, (WINDOW_WIDTH * 0.2, 0))
+
 def update_left_info():
+    global black_turn, white_turn
     left_info_surface = pygame.Surface((WINDOW_WIDTH * 0.2, WINDOW_HEIGHT))
     left_info_surface.fill(left_info_color)
     # Display player information
-    display_text('white: ' + str(white_count), WINDOW_WIDTH * 0.1, 50, color=BLACK, surface=left_info_surface)
-    display_text('black: ' + str(black_count), WINDOW_WIDTH * 0.1, 100, color=BLACK, surface=left_info_surface)
-    display_text('point_white: ' + str(point_white), WINDOW_WIDTH * 0.1, 150, color=BLACK, surface=left_info_surface)
-    display_text('point_black: ' + str(point_black), WINDOW_WIDTH * 0.1, 200, color=BLACK, surface=left_info_surface)
+    display_text('White: ' + str(white_count), WINDOW_WIDTH * 0.1, 50, color=BLACK, surface=left_info_surface)
+    display_text('Black: ' + str(black_count), WINDOW_WIDTH * 0.1, 100, color=BLACK, surface=left_info_surface)
+    display_text('Point W: ' + str(point_white), WINDOW_WIDTH * 0.1, 150, color=BLACK, surface=left_info_surface)
+    display_text('Point B: ' + str(point_black), WINDOW_WIDTH * 0.1, 200, color=BLACK, surface=left_info_surface)
+    display_text('Now Turn ', WINDOW_WIDTH * 0.1, 250, color=BLACK, surface=left_info_surface)
+    if white_turn:
+        display_text('White', WINDOW_WIDTH * 0.1, 300, color=BLACK, surface=left_info_surface)
+    else:
+        display_text('Black', WINDOW_WIDTH * 0.1, 300, color=BLACK, surface=left_info_surface)   
     window.blit(left_info_surface, (0, 0))
 
 # Main loop
 def start():
+    global black_turn, white_turn
+    window.fill(WHITE)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:  # Left mouse button
+                    if white_turn:
+                        black_turn = True
+                        white_turn = False
+                    else:
+                        black_turn = False
+                        white_turn = True
                            
         # Update the display
         update_left_info()
+        display_board()
         pygame.display.update()
 
-
-def start():
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-                                
-        # Clear the screen
-        window.fill(WHITE)
-
-        # Update the display
-        pygame.display.update()
+# start()
