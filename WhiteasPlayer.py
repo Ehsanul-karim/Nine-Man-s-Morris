@@ -95,8 +95,8 @@ def display_board():
     board_image = pygame.image.load('./Images/Board.png')
     board_image = pygame.transform.scale(board_image, (int(WINDOW_WIDTH * 0.8), WINDOW_HEIGHT))    
     board_surface.blit(board_image, (0, 0))
-    for pos in positions:
-      pygame.draw.rect(board_surface, BLACK, (pos[0], pos[1], RECTANGLE_SIZE, RECTANGLE_SIZE), 1)
+    #for pos in positions:
+      #pygame.draw.rect(board_surface, BLACK, (pos[0], pos[1], RECTANGLE_SIZE, RECTANGLE_SIZE), 1)
     window.blit(board_surface, (WINDOW_WIDTH * 0.2, 0))
     return board_surface
 
@@ -153,11 +153,11 @@ def start():
         left_info_surface = update_left_info()
         board_surface = display_board()
         for pos in red_circle_positions:  # Draw all the circles
-            pygame.draw.circle(board_surface, RED, (pos[0],pos[1]), 15)
+            pygame.draw.circle(board_surface, RED, (pos[0]-160,pos[1]), 15)
 
             window.blit(board_surface, (WINDOW_WIDTH * 0.2, 0))
         for pos in white_circle_positions:  # Draw all the circles
-            pygame.draw.circle(board_surface, WHITE, (pos[0],pos[1]), 15)
+            pygame.draw.circle(board_surface, WHITE, (pos[0]-160,pos[1]), 15)
 
             window.blit(board_surface, (WINDOW_WIDTH * 0.2, 0))
         # board_surface = show_push_places(board_surface)
