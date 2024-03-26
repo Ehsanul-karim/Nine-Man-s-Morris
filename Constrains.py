@@ -17,6 +17,7 @@ pygame.display.set_icon(logo)
 # Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+option_height = 50  # Height of each option
 BLUE_TRANSPARENT = (0, 0, 255, 128)
 RECTANGLE_SIZE = 30
 
