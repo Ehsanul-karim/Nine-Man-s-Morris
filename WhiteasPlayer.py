@@ -13,30 +13,31 @@ point_black = 0
 
 black_turn = False
 white_turn = True
-phase1_pieces = 18
+global phase1_pieces
+phase1_pieces= 18
 
 board=[' ']*24
 
 positions_for_Board = {
-    'position_1': [15, 12], 'position_2': [305, 12], 'position_3': [595, 12],
-    'position_4': [111, 102], 'position_5': [305, 102], 'position_6': [500, 102],
-    'position_7': [208, 194], 'position_8': [305, 194], 'position_9': [402, 194],
-    'position_10': [15, 286], 'position_11': [111, 286], 'position_12': [208, 286],
-    'position_13': [402, 286], 'position_14': [500, 286], 'position_15': [595, 286],
-    'position_16': [208, 378], 'position_17': [305, 378], 'position_18': [402, 378],
-    'position_19': [111, 470], 'position_20': [305, 470], 'position_21': [500, 470],
-    'position_22': [15, 560], 'position_23': [305, 560], 'position_24': [595, 560]
+    'position_1': [188, 28], 'position_2': [480, 26], 'position_3': [770, 26],
+    'position_4': [288, 121], 'position_5': [484, 120], 'position_6': [674, 121],
+    'position_7': [384, 215], 'position_8': [477, 213], 'position_9': [578, 212],
+    'position_10': [189, 300], 'position_11': [286, 301], 'position_12': [382, 302],
+    'position_13': [575, 299], 'position_14': [677, 301], 'position_15': [778, 301],
+    'position_16': [385, 386], 'position_17': [481, 399], 'position_18': [582, 387],
+    'position_19': [287, 485], 'position_20': [478, 484], 'position_21': [676, 487],
+    'position_22': [188, 577], 'position_23': [478, 579], 'position_24': [770, 578]
 }
 
 positions_for_cal = {
-    position_1 : 0, position_2 : 1, position_3 : 2,
-    position_4: 3, position_5: 4, position_6: 5,
-    position_7: 6, position_8: 7, position_9: 8,
-    position_10: 9, position_11: 10, position_12: 11,
-    position_13: 12, position_14: 13, position_15: 14,
-    position_16: 15, position_17: 16, position_18: 17,
-    position_19: 18, position_20: 19, position_21: 20,
-    position_22: 21, position_23: 22, position_24: 23
+    'position_1' : 0, 'position_2' : 1, 'position_3' : 2,
+    'position_4': 3, 'position_5': 4, 'position_6': 5,
+    'position_7': 6, 'position_8': 7, 'position_9': 8,
+    'position_10': 9, 'position_11': 10, 'position_12': 11,
+    'position_13': 12, 'position_14': 13, 'position_15': 14,
+    'position_16': 15, 'position_17': 16, 'position_18': 17,
+    'position_19': 18, 'position_20': 19, 'position_21': 20,
+    'position_22': 21, 'position_23': 22, 'position_24': 23
 }
 
 
@@ -74,21 +75,28 @@ def check_mill(move,player):
         return False
 
 def place_piece(move, player):
+        global phase1_pieces
         if phase1_pieces > 0:
             if is_valid_move(move):
                 board[move] = player
                 phase1_pieces -= 1
-                if check_mill(move):
-                    return True
-                return False
+                return True
             else:
-                print("Invalid move. Please try again.")
+                print("Invalid move. Please try again.(p)")
                 return False
         else:
             print("All pieces have been placed. Please proceed to the next phase.")
             return False
 
-
+def remove_piece(move,player):
+        global phase1_pieces
+        if board[move] != ' ' and board[move] !=player:
+            board[move] = ' '
+            phase1_pieces -= 1
+            
+        else:
+            print("Invalid move. Please try again.(r)")
+            
 
 def display_board():
     board_surface = pygame.Surface((WINDOW_WIDTH * 0.8, WINDOW_HEIGHT))
@@ -122,6 +130,8 @@ def update_left_info():
 
 # Main loop
 def start():
+    global phase1_pieces
+    phase1_pieces= 18
     red_circle_positions = []
     white_circle_positions=[]
     global black_turn, white_turn
@@ -139,15 +149,37 @@ def start():
                     print("Closest matched position:", closest_pos)
                     move=pos_name(closest_pos)
                     
-                    print(move)
+                    print(positions_for_cal.get(move))
                     if white_turn:
-                        red_circle_positions.append(closest_pos)
-                        black_turn = True
-                        white_turn = False
+                        if place_piece(positions_for_cal.get(move),'W'):
+                            white_circle_positions.append(list(closest_pos))
+                            if check_mill(positions_for_cal.get(move),'W'):
+                                mil=True
+                            else:
+                                black_turn = True
+                                white_turn = False
+                                mil = False
+                        elif mil:
+                            remove_piece(positions_for_cal.get(move),'W')
+                            red_circle_positions.remove(list(closest_pos))
+                            black_turn = True
+                            white_turn = False
+                            mil = False
                     else:
-                        white_circle_positions.append(closest_pos)
-                        black_turn = False
-                        white_turn = True
+                        if place_piece(positions_for_cal.get(move),'B'):
+                            red_circle_positions.append(list(closest_pos))
+                            if check_mill(positions_for_cal.get(move),'B'):
+                                mil=True
+                            else:
+                                black_turn = False
+                                white_turn = True
+                                mil = False
+                        elif mil:
+                            remove_piece(positions_for_cal.get(move),'B')
+                            white_circle_positions.remove(list(closest_pos))
+                            black_turn = False
+                            white_turn = True
+                            mil = False
                   
         # Update the display
         left_info_surface = update_left_info()
