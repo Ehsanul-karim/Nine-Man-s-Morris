@@ -47,7 +47,7 @@ def closest_position(clicked_pos):
     closest_pos = None
     for  pos in positions:
         distance = math.sqrt((clicked_pos[0] - pos[0])**2 + (clicked_pos[1] - pos[1])**2)
-        if distance < min_distance:
+        if distance < min_distance and distance<=10:
             min_distance = distance
             closest_pos = pos
     return closest_pos  
@@ -145,41 +145,42 @@ def start():
                 if event.button == 1:  # Left mouse button
                     clicked_pos = event.pos
                     closest_pos = closest_position(clicked_pos)
-                    print("Clicked position:", clicked_pos)
-                    print("Closest matched position:", closest_pos)
-                    move=pos_name(closest_pos)
+                    if closest_pos is not None:
+                        print("Clicked position:", clicked_pos)
+                        print("Closest matched position:", closest_pos)
+                        move=pos_name(closest_pos)
                     
-                    print(positions_for_cal.get(move))
-                    if white_turn:
-                        if place_piece(positions_for_cal.get(move),'W'):
-                            white_circle_positions.append(list(closest_pos))
-                            if check_mill(positions_for_cal.get(move),'W'):
-                                mil=True
-                            else:
+                        print(positions_for_cal.get(move))
+                        if white_turn:
+                            if place_piece(positions_for_cal.get(move),'W'):
+                                white_circle_positions.append(list(closest_pos))
+                                if check_mill(positions_for_cal.get(move),'W'):
+                                    mil=True
+                                else:
+                                    black_turn = True
+                                    white_turn = False
+                                    mil = False
+                            elif mil:
+                                remove_piece(positions_for_cal.get(move),'W')
+                                red_circle_positions.remove(list(closest_pos))
                                 black_turn = True
                                 white_turn = False
                                 mil = False
-                        elif mil:
-                            remove_piece(positions_for_cal.get(move),'W')
-                            red_circle_positions.remove(list(closest_pos))
-                            black_turn = True
-                            white_turn = False
-                            mil = False
-                    else:
-                        if place_piece(positions_for_cal.get(move),'B'):
-                            red_circle_positions.append(list(closest_pos))
-                            if check_mill(positions_for_cal.get(move),'B'):
-                                mil=True
-                            else:
+                        else:
+                            if place_piece(positions_for_cal.get(move),'B'):
+                                red_circle_positions.append(list(closest_pos))
+                                if check_mill(positions_for_cal.get(move),'B'):
+                                    mil=True
+                                else:
+                                    black_turn = False
+                                    white_turn = True
+                                    mil = False
+                            elif mil:
+                                remove_piece(positions_for_cal.get(move),'B')
+                                white_circle_positions.remove(list(closest_pos))
                                 black_turn = False
                                 white_turn = True
                                 mil = False
-                        elif mil:
-                            remove_piece(positions_for_cal.get(move),'B')
-                            white_circle_positions.remove(list(closest_pos))
-                            black_turn = False
-                            white_turn = True
-                            mil = False
                   
         # Update the display
         left_info_surface = update_left_info()
