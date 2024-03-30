@@ -93,19 +93,27 @@ def show_available_position(move):
     return temp_available_spaces
 
 
-def place_piece(move, player):
+def place_piece(move, player, phase_check = True):
         global phase1_pieces
-        if phase1_pieces > 0:
-            if is_valid_move(move):
-                board[move] = player
-                phase1_pieces -= 1
-                return True
+        if phase_check:
+            if phase1_pieces > 0:
+                if is_valid_move(move):
+                    board[move] = player
+                    phase1_pieces -= 1
+                    return True
+                else:
+                    print("Invalid move. Please try again.(p)")
+                    return False
             else:
-                print("Invalid move. Please try again.(p)")
+                # print("All pieces have been placed. Please proceed to the next phase.")
                 return False
         else:
-            # print("All pieces have been placed. Please proceed to the next phase.")
-            return False
+                if is_valid_move(move):
+                    board[move] = player
+                    return True
+                else:
+                    print("Invalid move. Please try again.(p)")
+                    return False
 
 def remove_piece(move,player):
         global phase1_pieces
@@ -210,29 +218,37 @@ def start():
                                     else:
                                         print("White- Second Phase Running. Invalid move. Please try again.(p)")
                                 else:
-                                    remove=pos_name(cache_postion)
-                                    remove_piece(positions_for_cal.get(remove),'B') # B means, B can not present in that cell. It is obiously, as There must be White in that cell.
-                                    white_circle_positions.remove(list(cache_postion))
+                                    temp_available_spaces_np = np.array(temp_available_spaces)
+                                    closest_pos_np = np.array(closest_pos)
+                                    if any(np.array_equal(newpos, closest_pos_np) for newpos in temp_available_spaces_np):
+                                            remove=pos_name(cache_postion)
+                                            remove_piece(positions_for_cal.get(remove),'B') # B means, B can not present in that cell. It is obiously, as There must be White in that cell.
+                                            white_circle_positions.remove(list(cache_postion))
 
-                                    place_piece(positions_for_cal.get(move),'W')
-                                    white_circle_positions.append(list(closest_pos))
+                                            place_piece(positions_for_cal.get(move),'W',phase_check = False)
+                                            white_circle_positions.append(list(closest_pos))
 
-                                    temp_available_spaces.clear()
-                                    cache_postion = -1
+                                            temp_available_spaces.clear()
+                                            cache_postion = -1
 
-                                    if check_mill(positions_for_cal.get(move),'W'):
-                                        mil=True
-                                        if second_phase:
-                                            second_phase = False # Temporary
-                                            mother = 2
-                                        else:    
-                                            first_phase = False # Temporary
-                                            mother = 1
+                                            if check_mill(positions_for_cal.get(move),'W'):
+                                                mil=True
+                                                if second_phase:
+                                                    second_phase = False # Temporary
+                                                    mother = 2
+                                                else:    
+                                                    first_phase = False # Temporary
+                                                    mother = 1
+                                            else:
+                                                black_turn = True
+                                                white_turn = False
+                                                mil = False
+                                            round_1 = True
                                     else:
-                                        black_turn = True
-                                        white_turn = False
-                                        mil = False
-                                    round_1 = True
+                                            temp_available_spaces.clear()
+                                            cache_postion = -1
+                                            round_1 = True
+                                            print("invalid Move by this white piece")
                             elif mil:
                                 if is_he_here(positions_for_cal.get(move),'B'):
                                     remove_piece(positions_for_cal.get(move),'W')
@@ -283,29 +299,37 @@ def start():
                                     else:
                                         print("Black- Second Phase Running. Invalid move. Please try again.(p)")
                                 else:
-                                    remove=pos_name(cache_postion)
-                                    remove_piece(positions_for_cal.get(remove),'W')
-                                    red_circle_positions.remove(list(cache_postion))
+                                    temp_available_spaces_np = np.array(temp_available_spaces)
+                                    closest_pos_np = np.array(closest_pos)
+                                    if any(np.array_equal(newpos, closest_pos_np) for newpos in temp_available_spaces_np):
+                                            remove=pos_name(cache_postion)
+                                            remove_piece(positions_for_cal.get(remove),'W') # W means, W can not present in that cell. It is obiously, as There must be Black in that cell.
+                                            red_circle_positions.remove(list(cache_postion))
 
-                                    place_piece(positions_for_cal.get(move),'B')
-                                    red_circle_positions.append(list(closest_pos))
+                                            place_piece(positions_for_cal.get(move),'B', phase_check = False)
+                                            red_circle_positions.append(list(closest_pos))
 
-                                    temp_available_spaces.clear()
-                                    cache_postion = -1
+                                            temp_available_spaces.clear()
+                                            cache_postion = -1
 
-                                    if check_mill(positions_for_cal.get(move),'B'):
-                                        mil=True
-                                        if second_phase:
-                                            second_phase = False # Temporary
-                                            mother = 2
-                                        else:    
-                                            first_phase = False # Temporary
-                                            mother = 1
+                                            if check_mill(positions_for_cal.get(move),'B'):
+                                                mil=True
+                                                if second_phase:
+                                                    second_phase = False # Temporary
+                                                    mother = 2
+                                                else:    
+                                                    first_phase = False # Temporary
+                                                    mother = 1
+                                            else:
+                                                black_turn = False
+                                                white_turn = True
+                                                mil = False
+                                            round_1 = True
                                     else:
-                                        black_turn = False
-                                        white_turn = True
-                                        mil = False
-                                    round_1 = True
+                                            temp_available_spaces.clear()
+                                            cache_postion = -1
+                                            round_1 = True
+                                            print("Invalid move by this red piece")
                             elif mil:
                                 if is_he_here(positions_for_cal.get(move),'W'):
                                     remove_piece(positions_for_cal.get(move),'B')

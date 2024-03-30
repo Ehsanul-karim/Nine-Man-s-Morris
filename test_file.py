@@ -1,8 +1,7 @@
-import numpy as np
-# Assuming `array` is a numpy array and `my_list` is a Python list
-array = np.array([1, 2, 3])
-my_list = [1, 2, 3]
+temp_available_spaces = [[481, 399], [582, 387]]
+closest_pos = [481, 399]
 
-# Element-wise comparison
-list_equals_array = all(x == y for x, y in zip(my_list, array))
-print("List equals array:", list_equals_array)
+if any(pos == closest_pos for pos in temp_available_spaces):
+    print("closest_pos is in temp_available_spaces")
+else:
+    print("closest_pos is not in temp_available_spaces")
