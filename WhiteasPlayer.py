@@ -6,15 +6,17 @@ left_info_rect = pygame.Rect(0, 0, WINDOW_WIDTH * 0.2, WINDOW_HEIGHT)
 
 
 # Define initial player information
-white_count = 9
-black_count = 9
-point_white = 0
-point_black = 0
+white_placed = 0
+red_placed = 0
+white_removed = 0
+red_removed = 0
+
+cache_postion = -1
 
 black_turn = False
 white_turn = True
 global phase1_pieces
-phase1_pieces= 18
+phase1_pieces = 18
 
 board=[' ']*24
 
@@ -66,6 +68,11 @@ def is_valid_move(move):
             return True
         return False
 
+def is_he_here(move,player):
+        if board[move] == player:
+            return True
+        return False
+
 def check_mill(move,player):
         for mill in mills:
             if move in mill:
@@ -73,6 +80,18 @@ def check_mill(move,player):
                 if board[pos1] == board[pos2] == board[pos3] == player:
                     return True
         return False
+
+def show_available_position(move):
+    temp_available_spaces = []
+    for positon in mills:
+        if move in positon:
+            for element in positon:
+                if is_valid_move(element):
+                    coordinates = positions_for_Board['position_'+str(element+1)]
+                    temp_available_spaces.append(list(coordinates))
+
+    return temp_available_spaces
+
 
 def place_piece(move, player):
         global phase1_pieces
@@ -85,15 +104,14 @@ def place_piece(move, player):
                 print("Invalid move. Please try again.(p)")
                 return False
         else:
-            print("All pieces have been placed. Please proceed to the next phase.")
+            # print("All pieces have been placed. Please proceed to the next phase.")
             return False
 
 def remove_piece(move,player):
         global phase1_pieces
         if board[move] != ' ' and board[move] !=player:
             board[move] = ' '
-            phase1_pieces -= 1
-            
+            # phase1_pieces -= 1
         else:
             print("Invalid move. Please try again.(r)")
             
@@ -114,10 +132,10 @@ def update_left_info():
     left_info_surface = pygame.Surface((WINDOW_WIDTH * 0.2, WINDOW_HEIGHT))
     left_info_surface.fill(left_info_color)
     # Display player information
-    display_text('White: ' + str(white_count), WINDOW_WIDTH * 0.1, 50, color=BLACK, surface=left_info_surface)
-    display_text('Black: ' + str(black_count), WINDOW_WIDTH * 0.1, 100, color=BLACK, surface=left_info_surface)
-    display_text('Point W: ' + str(point_white), WINDOW_WIDTH * 0.1, 150, color=BLACK, surface=left_info_surface)
-    display_text('Point B: ' + str(point_black), WINDOW_WIDTH * 0.1, 200, color=BLACK, surface=left_info_surface)
+    display_text('White: ' + str(white_placed), WINDOW_WIDTH * 0.1, 50, color=BLACK, surface=left_info_surface)
+    display_text('Black: ' + str(red_placed), WINDOW_WIDTH * 0.1, 100, color=BLACK, surface=left_info_surface)
+    display_text('Point B: ' + str(white_removed), WINDOW_WIDTH * 0.1, 150, color=BLACK, surface=left_info_surface)
+    display_text('Point W: ' + str(red_removed), WINDOW_WIDTH * 0.1, 200, color=BLACK, surface=left_info_surface)
     display_text('Now Turn ', WINDOW_WIDTH * 0.1, 250, color=BLACK, surface=left_info_surface)
     if white_turn:
         display_text('White', WINDOW_WIDTH * 0.1, 300, color=BLACK, surface=left_info_surface)
@@ -130,12 +148,19 @@ def update_left_info():
 
 # Main loop
 def start():
+    global cache_postion
     global phase1_pieces
+    global white_removed, red_removed, white_placed, red_placed
     phase1_pieces= 18
+    temp_available_spaces = []
     red_circle_positions = []
     white_circle_positions=[]
     global black_turn, white_turn
     window.fill(WHITE)
+    round_1 = True
+    second_phase = False
+    first_phase = True
+    mother = -1
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -149,49 +174,169 @@ def start():
                         print("Clicked position:", clicked_pos)
                         print("Closest matched position:", closest_pos)
                         move=pos_name(closest_pos)
-                    
+
                         print(positions_for_cal.get(move))
                         if white_turn:
-                            if place_piece(positions_for_cal.get(move),'W'):
-                                white_circle_positions.append(list(closest_pos))
-                                if check_mill(positions_for_cal.get(move),'W'):
-                                    mil=True
+                            if first_phase == True:
+                                if place_piece(positions_for_cal.get(move),'W'):
+                                    white_circle_positions.append(list(closest_pos))
+                                    white_placed+=1
+                                    if white_placed ==9 and red_placed ==9:
+                                        second_phase = True
+                                        first_phase = False
+                                    if check_mill(positions_for_cal.get(move),'W'):
+                                        mil=True
+                                        if second_phase:
+                                            second_phase = False # Temporary
+                                            mother = 2
+                                        else:    
+                                            first_phase = False # Temporary
+                                            mother = 1
+                                    else:
+                                        black_turn = True
+                                        white_turn = False
+                                        mil = False
+
+                            elif second_phase == True:
+                                if round_1:
+                                    if is_he_here(positions_for_cal.get(move),'W'):
+                                        print("White Found")
+                                        temp_available_spaces = show_available_position(positions_for_cal.get(move))
+                                        if temp_available_spaces is not None:
+                                            round_1 = False
+                                            cache_postion = closest_pos
+                                        else:
+                                            print("No vacancy. Choose another white")
+                                    else:
+                                        print("White- Second Phase Running. Invalid move. Please try again.(p)")
                                 else:
+                                    remove=pos_name(cache_postion)
+                                    remove_piece(positions_for_cal.get(remove),'B') # B means, B can not present in that cell. It is obiously, as There must be White in that cell.
+                                    white_circle_positions.remove(list(cache_postion))
+
+                                    place_piece(positions_for_cal.get(move),'W')
+                                    white_circle_positions.append(list(closest_pos))
+
+                                    temp_available_spaces.clear()
+                                    cache_postion = -1
+
+                                    if check_mill(positions_for_cal.get(move),'W'):
+                                        mil=True
+                                        if second_phase:
+                                            second_phase = False # Temporary
+                                            mother = 2
+                                        else:    
+                                            first_phase = False # Temporary
+                                            mother = 1
+                                    else:
+                                        black_turn = True
+                                        white_turn = False
+                                        mil = False
+                                    round_1 = True
+                            elif mil:
+                                if is_he_here(positions_for_cal.get(move),'B'):
+                                    remove_piece(positions_for_cal.get(move),'W')
+                                    red_circle_positions.remove(list(closest_pos))
+                                    red_removed+=1
                                     black_turn = True
                                     white_turn = False
                                     mil = False
-                            elif mil:
-                                remove_piece(positions_for_cal.get(move),'W')
-                                red_circle_positions.remove(list(closest_pos))
-                                black_turn = True
-                                white_turn = False
-                                mil = False
-                        else:
-                            if place_piece(positions_for_cal.get(move),'B'):
-                                red_circle_positions.append(list(closest_pos))
-                                if check_mill(positions_for_cal.get(move),'B'):
-                                    mil=True
+                                    if mother == 1:
+                                        first_phase = True # Turn on again
+                                        second_phase = False
+                                    elif mother == 2:
+                                        first_phase = False
+                                        second_phase = True # Turn on again
                                 else:
+                                    print("Select a black piece to kill")
+                        else:
+                            if first_phase == True:
+                                if place_piece(positions_for_cal.get(move),'B'):
+                                    red_circle_positions.append(list(closest_pos))
+                                    red_placed+=1
+                                    if red_placed ==9 and white_placed==9:
+                                        first_phase = False
+                                        second_phase = True
+                                    if check_mill(positions_for_cal.get(move),'B'):
+                                        mil=True
+                                        if second_phase:
+                                            second_phase = False # Temporary
+                                            mother = 2
+                                        else:    
+                                            first_phase = False # Temporary
+                                            mother = 1
+                                    else:
+                                        black_turn = False
+                                        white_turn = True
+                                        mil = False
+
+                            elif second_phase == True:
+                                if round_1:
+                                    if is_he_here(positions_for_cal.get(move),'B'):
+                                        print('black found')
+                                        temp_available_spaces = show_available_position(positions_for_cal.get(move))
+                                        if temp_available_spaces is not None:
+                                            round_1 = False
+                                            cache_postion = closest_pos
+                                        else:
+                                            print("No vacancy. Choose another red")
+                                    else:
+                                        print("Black- Second Phase Running. Invalid move. Please try again.(p)")
+                                else:
+                                    remove=pos_name(cache_postion)
+                                    remove_piece(positions_for_cal.get(remove),'W')
+                                    red_circle_positions.remove(list(cache_postion))
+
+                                    place_piece(positions_for_cal.get(move),'B')
+                                    red_circle_positions.append(list(closest_pos))
+
+                                    temp_available_spaces.clear()
+                                    cache_postion = -1
+
+                                    if check_mill(positions_for_cal.get(move),'B'):
+                                        mil=True
+                                        if second_phase:
+                                            second_phase = False # Temporary
+                                            mother = 2
+                                        else:    
+                                            first_phase = False # Temporary
+                                            mother = 1
+                                    else:
+                                        black_turn = False
+                                        white_turn = True
+                                        mil = False
+                                    round_1 = True
+                            elif mil:
+                                if is_he_here(positions_for_cal.get(move),'W'):
+                                    remove_piece(positions_for_cal.get(move),'B')
+                                    white_circle_positions.remove(list(closest_pos))
+                                    white_removed+=1
                                     black_turn = False
                                     white_turn = True
                                     mil = False
-                            elif mil:
-                                remove_piece(positions_for_cal.get(move),'B')
-                                white_circle_positions.remove(list(closest_pos))
-                                black_turn = False
-                                white_turn = True
-                                mil = False
-                  
+                                    if mother == 1:
+                                        first_phase = True # Turn on again
+                                        second_phase = False
+                                    elif mother == 2:
+                                        first_phase = False
+                                        second_phase = True # Turn on again
+                                else:
+                                    print("Select a white piece to kill")
+
         # Update the display
         left_info_surface = update_left_info()
         board_surface = display_board()
+        for pos in temp_available_spaces:  # Draw all the circles
+            pygame.draw.rect(board_surface, BLACK, (pos[0]-173, pos[1]-15, RECTANGLE_SIZE, RECTANGLE_SIZE), 1)
+            window.blit(board_surface, (WINDOW_WIDTH * 0.2, 0))
+
+        # temp_available_spaces.clear()
+
         for pos in red_circle_positions:  # Draw all the circles
             pygame.draw.circle(board_surface, RED, (pos[0]-160,pos[1]), 15)
-
             window.blit(board_surface, (WINDOW_WIDTH * 0.2, 0))
         for pos in white_circle_positions:  # Draw all the circles
             pygame.draw.circle(board_surface, WHITE, (pos[0]-160,pos[1]), 15)
-
             window.blit(board_surface, (WINDOW_WIDTH * 0.2, 0))
         # board_surface = show_push_places(board_surface)
         pygame.display.update()

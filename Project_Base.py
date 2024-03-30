@@ -47,7 +47,7 @@ def main():
                 display_text(option, WINDOW_WIDTH // 2, y, BLACK, BLUE_TRANSPARENT)
             else:
                 display_text(option, WINDOW_WIDTH // 2, y)
-
+                
         # Update the display
         pygame.display.update()
 
