@@ -3,7 +3,6 @@ from Constrains import *
 
 # Options
 options = ['Start', 'How to play', 'Gameplay', 'Settings' , 'Exit']
-option_height = 50  # Height of each option
 selected_option = 0  # Index of the currently selected option
 
 # Main loop
@@ -48,7 +47,7 @@ def main():
                 display_text(option, WINDOW_WIDTH // 2, y, BLACK, BLUE_TRANSPARENT)
             else:
                 display_text(option, WINDOW_WIDTH // 2, y)
-
+                
         # Update the display
         pygame.display.update()
 
