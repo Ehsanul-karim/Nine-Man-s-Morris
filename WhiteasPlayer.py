@@ -83,12 +83,16 @@ def check_mill(move,player):
 
 def show_available_position(move):
     temp_available_spaces = []
+
     for positon in mills:
         if move in positon:
             for element in positon:
-                if is_valid_move(element):
-                    coordinates = positions_for_Board['position_'+str(element+1)]
-                    temp_available_spaces.append(list(coordinates))
+                element_index = positon.index(element)
+                move_index = positon.index(move)
+                if abs(element_index - move_index) == 1:
+                    if is_valid_move(element):
+                        coordinates = positions_for_Board['position_'+str(element+1)]
+                        temp_available_spaces.append(list(coordinates))
 
     return temp_available_spaces
 
@@ -208,7 +212,6 @@ def start():
                             elif second_phase == True:
                                 if round_1:
                                     if is_he_here(positions_for_cal.get(move),'W'):
-                                        print("White Found")
                                         temp_available_spaces = show_available_position(positions_for_cal.get(move))
                                         if temp_available_spaces is not None:
                                             round_1 = False
@@ -289,7 +292,6 @@ def start():
                             elif second_phase == True:
                                 if round_1:
                                     if is_he_here(positions_for_cal.get(move),'B'):
-                                        print('black found')
                                         temp_available_spaces = show_available_position(positions_for_cal.get(move))
                                         if temp_available_spaces is not None:
                                             round_1 = False
