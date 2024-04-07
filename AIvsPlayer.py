@@ -111,6 +111,7 @@ def place_piece(move, player, phase_check = True):
             if phase1_pieces > 0:
                 if is_valid_move(move):
                     board[move] = player
+                    
                     phase1_pieces -= 1
                     return True
                 else:
@@ -277,12 +278,11 @@ def start():
                                                     second_phase = True # Turn on again
                                             else:
                                                 print("Select a black piece to kill")
-            else:           
-                            move=mx.ai_move(board,4,'B')
-                            position_key = get_position_key(move, positions_for_cal)
-                            closest_pos=positions_for_Board.get(position_key)
-                            print(closest_pos)                               
+            else:                                           
                             if first_phase == True:
+                                move=mx.ai_move(board,4,'B',first_phase)
+                                position_key = get_position_key(move, positions_for_cal)
+                                closest_pos=positions_for_Board.get(position_key)
                                 if place_piece(move,'B'):
                                     red_circle_positions.append(list(closest_pos))
                                     red_placed+=1
