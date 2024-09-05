@@ -372,5 +372,3 @@ def start():
             window.blit(board_surface, (WINDOW_WIDTH * 0.2, 0))
         # board_surface = show_push_places(board_surface)
         pygame.display.update()
-
-start()

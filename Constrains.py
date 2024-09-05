@@ -20,6 +20,7 @@ RED = (255, 0, 0)
 BLACK = (0, 0, 0)
 option_height = 50  # Height of each option
 BLUE_TRANSPARENT = (0, 0, 255, 128)
+SOFT_GREEN = (102, 255, 102, 128)
 RECTANGLE_SIZE = 30
 
 left_info_color = (200, 200, 200)

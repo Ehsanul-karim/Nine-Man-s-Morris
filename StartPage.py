@@ -1,9 +1,9 @@
 from Constrains import *
-from WhiteasPlayer import start
-# from BlackasPlayer import start_2
+from playervsplayer import start
+from AIvsPlayer import start_2
 
 # Options
-options = ['Play as White', 'Play as Black']
+options = ['Player vs Player', 'Player vs AI']
 option_height = 50  # Height of each option
 selected_option = 0  # Index of the currently selected option
 
@@ -20,9 +20,9 @@ def start_game():
                 elif event.key == pygame.K_DOWN:
                     selected_option = (selected_option + 1) % len(options)
                 elif event.key == pygame.K_RETURN:  # Enter key
-                    if options[selected_option] == 'Play as White':
+                    if options[selected_option] == 'Player vs Player':
                         start()
-                    if options[selected_option] == 'Play as Black':
+                    if options[selected_option] == 'Player vs AI':
                         start_2()
                         
 
@@ -34,9 +34,9 @@ def start_game():
                         y = 200 + i * option_height
                         if pygame.Rect(WINDOW_WIDTH // 2 - 100, y - 25, 200, 50).collidepoint(mouse_x, mouse_y):
                             selected_option = i
-                            if option == 'Play as White':
+                            if option == 'Player vs Player':
                                 start()
-                            if option == 'Play as Black':
+                            if option == 'Player vs AI':
                                 start_2()
                                 
         # Clear the screen
@@ -46,10 +46,13 @@ def start_game():
         for i, option in enumerate(options):
             y = 200 + i * option_height
             if i == selected_option:
-                display_text(option, WINDOW_WIDTH // 2, y, BLACK, BLUE_TRANSPARENT)
+                display_text(option, WINDOW_WIDTH // 2, y, BLACK, SOFT_GREEN)
             else:
                 display_text(option, WINDOW_WIDTH // 2, y)
 
         # Update the display
         pygame.display.update()
+
+
+start_game()
     

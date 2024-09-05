@@ -96,7 +96,8 @@ def getNumberOfPlayerClosedPeaces(board, player):
 				if board[adj] == EMPTYCELL:
 					temp = 1
 					break
-			if temp == 0: number += 1
+			if temp == 0: 
+				number += 1
 	return number
 
 
@@ -170,12 +171,10 @@ def millHasBeenMadeInLastTurn(parent_board,board, player):
 
 def closedMorris(parent_board,board):
 	if millHasBeenMadeInLastTurn(parent_board,board, 'W'):
-			print("White Mill")
-			return -1
+		return -1
 	
 	if millHasBeenMadeInLastTurn(parent_board,board, 'B'):
-			print("Black Mill")
-			return 1
+		return 1
 	else:
 		return 0
 
@@ -201,3 +200,5 @@ def getAllEmptyPositionsOnBoard(board):
 		if board[i] == EMPTYCELL:
 			pos.append(i)
 	return pos
+
+
