@@ -1,5 +1,6 @@
 from Constrains import *
 import math
+import functions as func
 
 # Define positions and dimensions for left side info
 left_info_rect = pygame.Rect(0, 0, WINDOW_WIDTH * 0.2, WINDOW_HEIGHT)
@@ -174,6 +175,7 @@ def start():
     first_phase = True
     mother = -1
     while True:
+        parent_board=board.copy()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -348,10 +350,14 @@ def start():
                                         second_phase = True # Turn on again
                                 else:
                                     print("Select a white piece to kill")
+                        print(func.closedMorris(parent_board,board))
+                    
+
 
         # Update the display
         left_info_surface = update_left_info()
         board_surface = display_board()
+       
         for pos in temp_available_spaces:  # Draw all the circles
             pygame.draw.rect(board_surface, BLACK, (pos[0]-173, pos[1]-15, RECTANGLE_SIZE, RECTANGLE_SIZE), 1)
             window.blit(board_surface, (WINDOW_WIDTH * 0.2, 0))
@@ -366,5 +372,3 @@ def start():
             window.blit(board_surface, (WINDOW_WIDTH * 0.2, 0))
         # board_surface = show_push_places(board_surface)
         pygame.display.update()
-
-start()
